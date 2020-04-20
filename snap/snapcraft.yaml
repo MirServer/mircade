@@ -69,6 +69,10 @@ parts:
       - neverputt
       - starfighter
 
+  config:
+    plugin: dump
+    source: config
+
   egmde:
     source: .
     plugin: cmake-with-ppa
