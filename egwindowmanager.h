@@ -25,21 +25,29 @@ namespace egmde
 {
 using namespace miral;
 class Wallpaper;
+class Launcher;
 
 class WindowManagerPolicy :
     public MinimalWindowManager
 {
 public:
-    WindowManagerPolicy(WindowManagerTools const& tools, Wallpaper const& wallpaper);
+    WindowManagerPolicy(WindowManagerTools const& tools, Wallpaper const& wallpaper, Launcher& launcher);
 
     auto place_new_window(ApplicationInfo const& app_info, WindowSpecification const& request_parameters)
-        -> WindowSpecification override;
+    -> WindowSpecification override;
+
+    void advise_new_app(ApplicationInfo& application) override;
+
+    void advise_delete_window(WindowInfo const& window_info) override;
+
+    void advise_delete_app(ApplicationInfo const& application) override;
 
 private:
-    Wallpaper const* wallpaper;
+    Wallpaper const* const wallpaper;
+    Launcher* const launcher;
 
-    void keep_size_within_limits(
-        WindowInfo const& window_info, Displacement& delta, Width& new_width, Height& new_height) const;
+    void start_launcher() const;
+    int apps = 0;
 };
 }
 

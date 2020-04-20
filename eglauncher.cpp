@@ -330,6 +330,8 @@ void egmde::Launcher::operator()(wl_display* display)
 {
     auto client = std::make_shared<Self>(display, external_client_launcher);
     self = client;
+    std::thread([client] { client->start(); }).detach();
+
     client->run(display);
 
     // Possibly need to wait for stop() to release the client.

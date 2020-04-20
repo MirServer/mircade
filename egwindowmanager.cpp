@@ -18,57 +18,22 @@
 
 #include "egwindowmanager.h"
 #include "egwallpaper.h"
+#include "eglauncher.h"
 
 #include <miral/application_info.h>
 #include <miral/window_info.h>
 #include <miral/window_manager_tools.h>
 
 #include <linux/input.h>
+#include <future>
 
 using namespace mir::geometry;
 
-
-void egmde::WindowManagerPolicy::keep_size_within_limits(
-    WindowInfo const& window_info, Displacement& delta, Width& new_width, Height& new_height) const
-{
-    auto const min_width  = std::max(window_info.min_width(), Width{5});
-    auto const min_height = std::max(window_info.min_height(), Height{5});
-
-    if (new_width < min_width)
-    {
-        new_width = min_width;
-        if (delta.dx > DeltaX{0})
-            delta.dx = DeltaX{0};
-    }
-
-    if (new_height < min_height)
-    {
-        new_height = min_height;
-        if (delta.dy > DeltaY{0})
-            delta.dy = DeltaY{0};
-    }
-
-    auto const max_width  = window_info.max_width();
-    auto const max_height = window_info.max_height();
-
-    if (new_width > max_width)
-    {
-        new_width = max_width;
-        if (delta.dx < DeltaX{0})
-            delta.dx = DeltaX{0};
-    }
-
-    if (new_height > max_height)
-    {
-        new_height = max_height;
-        if (delta.dy < DeltaY{0})
-            delta.dy = DeltaY{0};
-    }
-}
-
-egmde::WindowManagerPolicy::WindowManagerPolicy(WindowManagerTools const& tools, Wallpaper const& wallpaper) :
+egmde::WindowManagerPolicy::WindowManagerPolicy(
+    miral::WindowManagerTools const& tools, Wallpaper const& wallpaper, Launcher& launcher) :
     MinimalWindowManager{tools},
-    wallpaper{&wallpaper}
+    wallpaper{&wallpaper},
+    launcher{&launcher}
 {
 }
 
@@ -83,4 +48,37 @@ miral::WindowSpecification egmde::WindowManagerPolicy::place_new_window(
     }
 
     return result;
+}
+
+void egmde::WindowManagerPolicy::advise_new_app(miral::ApplicationInfo& application)
+{
+    ++apps;
+
+    start_launcher();
+
+    WindowManagementPolicy::advise_new_app(application);
+}
+
+void egmde::WindowManagerPolicy::advise_delete_app(miral::ApplicationInfo const& application)
+{
+    --apps;
+
+    start_launcher();
+
+    WindowManagementPolicy::advise_delete_app(application);
+}
+
+void egmde::WindowManagerPolicy::start_launcher() const
+{
+    // If we only have the wallpaper and launcher, time to show the launcher!
+    if (apps == 2)
+    {
+        std::thread([this] { this->launcher->show(); }).detach();
+    }
+}
+
+void egmde::WindowManagerPolicy::advise_delete_window(miral::WindowInfo const& window_info)
+{
+    start_launcher();
+    WindowManagementPolicy::advise_delete_window(window_info);
 }

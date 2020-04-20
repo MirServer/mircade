@@ -65,9 +65,6 @@ int main(int argc, char const* argv[])
 
             switch (mir_keyboard_event_scan_code(kev))
             {
-            case KEY_A:launcher.show();
-                return true;
-
             case KEY_BACKSPACE:
                 runner.stop();
                 return true;
@@ -134,6 +131,6 @@ int main(int argc, char const* argv[])
             Keymap{},
             AppendEventFilter{keyboard_shortcuts},
             AppendEventFilter{touch_shortcuts},
-            set_window_management_policy<egmde::WindowManagerPolicy>(wallpaper)
+            set_window_management_policy<egmde::WindowManagerPolicy>(wallpaper, launcher)
         });
 }
