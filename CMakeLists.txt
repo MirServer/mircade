@@ -49,11 +49,7 @@ add_custom_target(egmde-launch ALL
     cp ${CMAKE_CURRENT_SOURCE_DIR}/egmde-launch.sh ${CMAKE_BINARY_DIR}/egmde-launch
 )
 
-add_custom_target(egmde-terminal ALL
-    cp ${CMAKE_CURRENT_SOURCE_DIR}/egmde-terminal ${CMAKE_BINARY_DIR}
-)
-
-install(PROGRAMS ${CMAKE_BINARY_DIR}/egmde-launch ${CMAKE_BINARY_DIR}/egmde-terminal ${CMAKE_BINARY_DIR}/egmde
+install(PROGRAMS ${CMAKE_BINARY_DIR}/egmde-launch ${CMAKE_BINARY_DIR}/egmde
     DESTINATION ${CMAKE_INSTALL_PREFIX}/bin
 )
 

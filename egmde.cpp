@@ -44,8 +44,6 @@ int main(int argc, char const* argv[])
     ExternalClientLauncher external_client_launcher;
     egmde::Launcher launcher{external_client_launcher};
 
-    auto const terminal_cmd = std::string{argv[0]} + "-terminal";
-
     auto const keyboard_shortcuts = [&](MirEvent const* event)
         {
             if (mir_event_get_type(event) != mir_event_type_input)
@@ -67,12 +65,6 @@ int main(int argc, char const* argv[])
             {
             case KEY_BACKSPACE:
                 runner.stop();
-                return true;
-
-            case KEY_T: launcher.run_app(terminal_cmd, egmde::Launcher::Mode::wayland);
-                return true;
-
-            case KEY_X: launcher.run_app(terminal_cmd, egmde::Launcher::Mode::x11);
                 return true;
 
             default:
