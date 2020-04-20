@@ -385,18 +385,6 @@ void egmde::Launcher::Self::keyboard_key(wl_keyboard* /*keyboard*/, uint32_t /*s
             run_app();
             break;
 
-        case XKB_KEY_BackSpace:
-            run_app(Mode::x11);
-            break;
-
-        case XKB_KEY_F11:
-            run_app(Mode::wayland_debug);
-            break;
-
-        case XKB_KEY_F12:
-            run_app(Mode::x11_debug);
-            break;
-
         case XKB_KEY_Escape:
             running = false;
             for_each_surface([this](auto& info) { this->draw_screen(info); });
@@ -755,11 +743,7 @@ void egmde::Launcher::Self::show_screen(SurfaceInfo& info) const
     static Printer printer;
     printer.print(width, height, content_area, current_app->title);
     auto const help =
-        "<Enter> = start app | "
-#if MIRAL_VERSION >= MIR_VERSION_NUMBER(2, 9, 0)
-        "<BkSp> = start X11 app | "
-#endif
-        "Arrows (or initial letter) = change app | <Esc> = cancel";
+        "<Enter> = start app | Arrows (or initial letter) = change app";
 
     printer.footer(width, height, content_area, {help, ""});
 
