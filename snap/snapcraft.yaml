@@ -78,6 +78,12 @@ parts:
     stage-packages:
       - supertux
 
+# In 18.04 needs an X server (20.04 works on Wayland)
+#  supertuxkart:
+#    plugin: nil
+#    stage-packages:
+#      - supertuxkart
+
 # Window isn't positioned for fullscreen, re-instate when have "kiosk" window management
 #  crawl-tiles:
 #    plugin: nil
