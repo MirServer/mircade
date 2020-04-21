@@ -15,4 +15,13 @@ then
   echo "1 1 1 0" > "${XDG_CONFIG_HOME}/starfighter/conf"
 fi
 
+# We need to do this for the user that launches supertux, so
+# it can't be done on installation
+if [ ! -f "${HOME}/.local/share/supertux2/config" ]
+then
+  # Initialize the configuration
+  mkdir -p "${HOME}/.local/share/supertux2"
+  echo "(supertux-config (video (fullscreen #t)))" > "${HOME}/.local/share/supertux2/config"
+fi
+
 exec ${bindir}egmde "$@"

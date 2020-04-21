@@ -43,6 +43,10 @@ layout:
     bind: $SNAP/usr/share/starfighter
   /usr/share/games:
     bind: $SNAP/usr/share/games
+  /usr/games:
+    bind: $SNAP/usr/games
+  /usr/lib/games:
+    bind: $SNAP/usr/lib/games
   /usr/share/X11/xkb:
     bind: $SNAP/usr/share/X11/xkb
   /usr/share/fonts:
@@ -66,6 +70,11 @@ parts:
       - neverball
       - neverputt
       - starfighter
+      # test
+      - supertux        # Needs config (fullscreen)
+      - crawl-tiles     # Cannot find data file 'defaults/autopickup_exceptions.txt'
+#      - caveexpress     # Weird cursor
+      - 7kaa            # Cursor not always positioned right
 
   config:
     plugin: dump
