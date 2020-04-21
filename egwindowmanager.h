@@ -42,6 +42,8 @@ public:
 
     void advise_delete_app(ApplicationInfo const& application) override;
 
+    void handle_window_ready(WindowInfo& window_info) override;
+
 private:
     Wallpaper const* const wallpaper;
     Launcher* const launcher;

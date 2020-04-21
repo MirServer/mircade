@@ -54,8 +54,6 @@ void egmde::WindowManagerPolicy::advise_new_app(miral::ApplicationInfo& applicat
 {
     ++apps;
 
-    start_launcher();
-
     WindowManagementPolicy::advise_new_app(application);
 }
 
@@ -81,4 +79,14 @@ void egmde::WindowManagerPolicy::advise_delete_window(miral::WindowInfo const& w
 {
     start_launcher();
     WindowManagementPolicy::advise_delete_window(window_info);
+}
+
+void egmde::WindowManagerPolicy::handle_window_ready(miral::WindowInfo& window_info)
+{
+    MinimalWindowManager::handle_window_ready(window_info);
+
+    if (window_info.window().application() == wallpaper->session())
+    {
+        start_launcher();
+    }
 }
