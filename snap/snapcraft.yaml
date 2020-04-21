@@ -117,3 +117,6 @@ parts:
       - libgl1-mesa-dri
       - libwayland-egl1-mesa
       - libglu1-mesa
+
+architectures:
+  - build-on: [ppc64el, arm64, armhf, amd64, i386]
