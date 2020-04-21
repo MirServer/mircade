@@ -1,0 +1,9 @@
+#!/bin/sh
+
+# We need to do this for the user that launches crawl-tiles, so
+# it can't be done on installation
+mkdir -p ${HOME}/.crawl/saves/db/
+mkdir -p ${HOME}/.crawl/saves/des/
+mkdir -p ${HOME}/.crawl/morgue/
+
+exit 0

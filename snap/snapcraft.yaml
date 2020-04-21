@@ -19,7 +19,6 @@ apps:
 plugs:
   opengl:
   audio-playback:
-  hardware-observe: # This allows some UDEV access neverputt wants
   network-bind:
 
 environment:
@@ -31,14 +30,10 @@ environment:
   XDG_CACHE_HOME:  $SNAP_USER_COMMON/.cache
   XDG_DATA_DIRS:   $SNAP/usr/share
   XDG_CONFIG_HOME: $SNAP_USER_DATA/.config
-  # Prep for Qt wayland
-  QT_PLUGIN_PATH: ${SNAP}/usr/lib/${SNAPCRAFT_ARCH_TRIPLET}/qt5/plugins/
-  QT_QPA_PLATFORM_PLUGIN_PATH: ${SNAP}/usr/lib/${SNAPCRAFT_ARCH_TRIPLET}/qt5/plugins/platforms/
-  QML2_IMPORT_PATH: ${SNAP}/usr/lib/${SNAPCRAFT_ARCH_TRIPLET}/qt5/qml
-  QTCHOOSER_NO_GLOBAL_DIR: 1
-  QT_SELECT: snappy-qt5
 
 layout:
+  /usr/share/crawl:
+    bind: $SNAP/usr/share/crawl
   /usr/share/starfighter:
     bind: $SNAP/usr/share/starfighter
   /usr/share/games:
@@ -63,22 +58,51 @@ layout:
     bind: $SNAP/usr/lib/$SNAPCRAFT_ARCH_TRIPLET/dri
 
 parts:
-  games:
+  neverball:
     plugin: nil
     stage-packages:
-      # SDL & working
       - neverball
+
+  neverputt:
+    plugin: nil
+    stage-packages:
       - neverputt
+
+  starfighter:
+    plugin: nil
+    stage-packages:
       - starfighter
-      # test
-      - supertux        # Needs config (fullscreen)
-      - crawl-tiles     # Cannot find data file 'defaults/autopickup_exceptions.txt'
-#      - caveexpress     # Weird cursor
-      - 7kaa            # Cursor not always positioned right
+
+  supertux:
+    plugin: nil
+    stage-packages:
+      - supertux
+
+# Window isn't positioned for fullscreen, re-instate when have "kiosk" window management
+#  crawl-tiles:
+#    plugin: nil
+#    stage-packages:
+#      - crawl-tiles
+
+# Weird cursor - seems to track motion with incorrect scale
+#  caveexpress:
+#    plugin: nil
+#    stage-packages:
+#      - caveexpress
+
+# Cursor not always positioned right, seems to track motion with wrong starting position
+#  7kaa:
+#    plugin: nil
+#    stage-packages:
+#      - 7kaa
 
   config:
     plugin: dump
     source: config
+
+  setup-scripts:
+    plugin: dump
+    source: setup-scripts
 
   egmde:
     source: .
