@@ -198,10 +198,8 @@ auto load_details() -> std::vector<app_details>
         if (sp != std::string::npos)
             app.erase(sp, app.size());
 
-        auto title = name + " [" + app + ']';
-
         if (!name.empty() && !exec.empty())
-            details.push_back(app_details{name, exec, icon, title});
+            details.push_back(app_details{name, exec, icon, name});
     }
 
     std::sort(begin(details), end(details),
