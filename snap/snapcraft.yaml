@@ -3,7 +3,7 @@ version: git
 summary: Example Mir confined desktop
 description: This example can be used as a guide
 confinement: strict
-grade: devel
+grade: stable
 base: core18
 
 apps:
