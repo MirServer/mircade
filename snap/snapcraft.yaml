@@ -20,9 +20,7 @@ plugs:
   opengl:
   audio-playback:
   hardware-observe: # This allows some UDEV access neverputt wants
-
-slots:
-  wayland:
+  network-bind:
 
 environment:
   SHELL: bash
