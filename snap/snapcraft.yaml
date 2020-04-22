@@ -16,15 +16,16 @@ apps:
       PULSE_SERVER: unix:$XDG_RUNTIME_DIR/../pulse/native
 
   daemon:
-    command: daemon-start egmde-launch
+    command: nested-start egmde-launch
     daemon: simple
-    restart-condition: on-failure
+    restart-condition: always
     environment:
       # Prep PulseAudio
       PULSE_SYSTEM: 1
       PULSE_RUNTIME_PATH: /var/run/pulse
-#    slots:
-#      - wayland
+    plugs:
+      - wayland
+      - hardware-observe
 
 plugs:
   opengl:

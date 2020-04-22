@@ -1,0 +1,25 @@
+#!/bin/sh
+
+if [ -z "${WAYLAND_DISPLAY}" ]
+then WAYLAND_DISPLAY=wayland-0
+fi
+
+# "Someone else" provides the real Wayland display, we use that as a host
+real_wayland=$(dirname "$XDG_RUNTIME_DIR")/${WAYLAND_DISPLAY}
+if [ ! -O "${real_wayland}" ]; then echo "Waiting for Wayland socket";  sleep 4;  fi
+if [ ! -O "${real_wayland}" ]; then echo "Waiting for Wayland socket";  sleep 16; fi
+
+if [ ! -O "${real_wayland}" ]
+then
+  echo "Stopping: No host Wayland socket (do you need to install mir-kiosk, or connect the wayland interface?)"
+  snapctl stop $SNAP_NAME.daemon
+  exit 0
+else
+  ln -sf "${real_wayland}" "$XDG_RUNTIME_DIR"
+
+  export MIR_SERVER_WAYLAND_HOST=${WAYLAND_DISPLAY}
+  unset WAYLAND_DISPLAY
+
+  exec "$@"
+fi
+
