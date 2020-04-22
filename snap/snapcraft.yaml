@@ -23,8 +23,8 @@ apps:
       # Prep PulseAudio
       PULSE_SYSTEM: 1
       PULSE_RUNTIME_PATH: /var/run/pulse
-    slots:
-      - wayland
+#    slots:
+#      - wayland
 
 plugs:
   opengl:
