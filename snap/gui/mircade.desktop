@@ -1,0 +1,7 @@
+[Desktop Entry]
+Name=mircade
+Exec=mircade
+Icon=${SNAP}/meta/gui/mircade.png
+Comment=Sample confined desktop
+Type=Application
+Categories=Game

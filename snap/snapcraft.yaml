@@ -123,9 +123,9 @@ parts:
     source: setup-scripts
 
   egmde:
-    source: .
+    source: egmde
     plugin: cmake-with-ppa
-    ppa: mir-team/dev
+    ppa: mir-team/release
     build-packages:
       - pkg-config
       - libmiral-dev
