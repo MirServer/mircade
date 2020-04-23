@@ -44,6 +44,10 @@ environment:
   XDG_CONFIG_HOME: $SNAP_USER_DATA/.config
 
 layout:
+  /usr/share/kodi:
+    bind: $SNAP/usr/share/kodi
+  /usr/lib/${SNAPCRAFT_ARCH_TRIPLET}/kodi:
+    bind: $SNAP/usr/lib/$SNAPCRAFT_ARCH_TRIPLET/kodi
   /usr/share/crawl:
     bind: $SNAP/usr/share/crawl
   /usr/share/starfighter:
@@ -114,6 +118,19 @@ parts:
 #    stage-packages:
 #      - 7kaa
 
+  kodi:
+    plugin: ppa
+    ppa: team-xbmc/ppa
+    override-stage: |
+      if [ -e "$SNAPCRAFT_PART_INSTALL/usr/bin/kodi" ]; then
+        sed --in-place s'!/usr!${SNAP}/usr!' $SNAPCRAFT_PART_INSTALL/usr/bin/kodi
+      fi
+      rm -f $SNAPCRAFT_PART_INSTALL/usr/share/applications/python2.7.desktop
+      snapcraftctl stage
+    stage-packages:
+      - to amd64: [ kodi-wayland, kodi-repository-kodi, kodi-visualization-spectrum, samba-libs ]
+      - to  i386: [ kodi-wayland, kodi-repository-kodi, kodi-visualization-spectrum, samba-libs ]
+
   config:
     plugin: dump
     source: config
@@ -143,6 +160,7 @@ parts:
   misc:
     plugin: nil
     stage-packages:
+      - libaudio2
       - libxcb1
       - libpulse0
       - libsndfile1
@@ -168,6 +186,7 @@ parts:
       - libgl1-mesa-dri
       - libwayland-egl1-mesa
       - libglu1-mesa
+      - va-driver-all
 
 architectures:
   - build-on: amd64
