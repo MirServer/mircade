@@ -101,10 +101,10 @@ parts:
 #      - supertuxkart
 
 # Window isn't positioned for fullscreen, re-instate when have "kiosk" window management
-#  crawl-tiles:
-#    plugin: nil
-#    stage-packages:
-#      - crawl-tiles
+  crawl-tiles:
+    plugin: nil
+    stage-packages:
+      - crawl-tiles
 
 # Weird cursor - seems to track motion with incorrect scale
 #  caveexpress:

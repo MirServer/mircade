@@ -44,6 +44,8 @@ public:
 
     void handle_window_ready(WindowInfo& window_info) override;
 
+    void handle_modify_window(WindowInfo& window_info, WindowSpecification const& modifications) override;
+
 private:
     Wallpaper const* const wallpaper;
     Launcher* const launcher;

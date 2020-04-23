@@ -46,15 +46,43 @@ miral::WindowSpecification egmde::WindowManagerPolicy::place_new_window(
     {
         result.type() = mir_window_type_decoration;
     }
+    else if ((result.type() == mir_window_type_normal || result.type() == mir_window_type_freestyle) &&
+             (!result.parent().is_set() || !result.parent().value().lock()))
+    {
+        result.state() = mir_window_state_maximized;
+        result.size() = mir::optional_value<Size>{}; // Ignore requested size (if any) when we maximize
+        tools.place_and_size_for_state(result, WindowInfo{});
+
+        if (!request_parameters.state().is_set() || request_parameters.state().value() != mir_window_state_restored)
+            result.state() = request_parameters.state();
+    }
 
     return result;
+}
+
+void egmde::WindowManagerPolicy::handle_modify_window(WindowInfo& window_info, WindowSpecification const& modifications)
+{
+    WindowSpecification specification = modifications;
+
+    if ((window_info.type() == mir_window_type_normal || window_info.type() == mir_window_type_freestyle) &&
+        !window_info.parent())
+    {
+        specification.state() = mir_window_state_maximized;
+        specification.size() = mir::optional_value<Size>{}; // Ignore requested size (if any) when we maximize
+        tools.place_and_size_for_state(specification, window_info);
+
+        if (!modifications.state().is_set() || modifications.state().value() != mir_window_state_restored)
+            specification.state() = modifications.state();
+    }
+
+    MinimalWindowManager::handle_modify_window(window_info, specification);
 }
 
 void egmde::WindowManagerPolicy::advise_new_app(miral::ApplicationInfo& application)
 {
     ++apps;
 
-    WindowManagementPolicy::advise_new_app(application);
+    MinimalWindowManager::advise_new_app(application);
 }
 
 void egmde::WindowManagerPolicy::advise_delete_app(miral::ApplicationInfo const& application)
@@ -63,7 +91,7 @@ void egmde::WindowManagerPolicy::advise_delete_app(miral::ApplicationInfo const&
 
     start_launcher();
 
-    WindowManagementPolicy::advise_delete_app(application);
+    MinimalWindowManager::advise_delete_app(application);
 }
 
 void egmde::WindowManagerPolicy::start_launcher() const
