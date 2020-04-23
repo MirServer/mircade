@@ -729,12 +729,11 @@ void egmde::Launcher::Self::show_screen(SurfaceInfo& info) const
 
     // One day we'll use the icon file
 
-    static Printer printer;
-    printer.print(width, height, content_area, current_app->title);
-    auto const help =
-        "<Enter> = start app | Arrows (or initial letter) = change app";
+    auto const prev = (current_app == apps.begin() ? apps.end() : current_app) - 1;
+    auto const next = current_app == apps.end()-1 ? apps.begin() : current_app + 1;
 
-    printer.footer(width, height, content_area, {help, ""});
+    static Printer printer;
+    printer.print(width, height, content_area, {prev->title,  current_app->title, next->title});
 
     wl_surface_attach(info.surface, info.buffer, 0, 0);
     wl_surface_commit(info.surface);
