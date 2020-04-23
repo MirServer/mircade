@@ -4,6 +4,7 @@
 # it can't be done on installation
 mkdir -p ${HOME}/.crawl/saves/db/
 mkdir -p ${HOME}/.crawl/saves/des/
+mkdir -p ${HOME}/.crawl/saves/sprint/
 mkdir -p ${HOME}/.crawl/morgue/
 
 exit 0
