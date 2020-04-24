@@ -47,6 +47,8 @@ plugs:
     default-provider: gtk-common-themes
 
 environment:
+  MIR_SERVER_XWAYLAND_PATH: ${SNAP}/usr/bin/Xwayland
+  MIR_SERVER_ENABLE_X11: 1
   SHELL: bash
   LC_ALL: C.UTF-8
   LD_LIBRARY_PATH: ${LD_LIBRARY_PATH}:${SNAP}/usr/lib/${SNAPCRAFT_ARCH_TRIPLET}/pulseaudio
@@ -57,6 +59,8 @@ environment:
   XDG_CONFIG_HOME: $SNAP_USER_DATA/.config
 
 layout:
+  /usr/bin/xkbcomp:
+    symlink: $SNAP/usr/bin/xkbcomp
   /usr/lib/${SNAPCRAFT_ARCH_TRIPLET}/webkit2gtk-4.0:
     bind: $SNAP/usr/lib/${SNAPCRAFT_ARCH_TRIPLET}/webkit2gtk-4.0
   /usr/share/kodi:
@@ -132,6 +136,17 @@ parts:
 #    plugin: nil
 #    stage-packages:
 #      - 7kaa
+
+  xterm:
+    plugin: nil
+    stage-packages:
+      - xterm
+
+  xwayland:
+    plugin: nil
+    stage-packages:
+      - xwayland
+      - libbz2-1.0
 
   epiphany:
     plugin: nil
@@ -216,6 +231,7 @@ parts:
   mesa:
     plugin: nil
     stage-packages:
+      - libgl1-mesa-glx
       - libgl1-mesa-dri
       - libwayland-egl1-mesa
       - libglu1-mesa
