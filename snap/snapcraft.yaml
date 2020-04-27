@@ -104,50 +104,6 @@ parts:
     stage-packages:
       - hexchat
 
-  neverball:
-    plugin: nil
-    stage-packages:
-      - neverball
-
-  neverputt:
-    plugin: nil
-    stage-packages:
-      - neverputt
-
-  starfighter:
-    plugin: nil
-    stage-packages:
-      - starfighter
-
-  supertux:
-    plugin: nil
-    stage-packages:
-      - supertux
-
-# In 18.04 needs an X server (20.04 works on Wayland)
-#  supertuxkart:
-#    plugin: nil
-#    stage-packages:
-#      - supertuxkart
-
-# Window isn't positioned for fullscreen, re-instate when have "kiosk" window management
-#  crawl-tiles:
-#    plugin: nil
-#    stage-packages:
-#      - crawl-tiles
-
-# Weird cursor - seems to track motion with incorrect scale
-#  caveexpress:
-#    plugin: nil
-#    stage-packages:
-#      - caveexpress
-
-# Cursor not always positioned right, seems to track motion with wrong starting position
-#  7kaa:
-#    plugin: nil
-#    stage-packages:
-#      - 7kaa
-
   xterm:
     plugin: nil
     stage-packages:
@@ -176,23 +132,6 @@ parts:
       snapcraftctl build
       # desktop-launch doesn't handle running without a user session very well, this avoids slow startup here
       sed --in-place s'/^  needs_update=true/:/' $SNAPCRAFT_PART_INSTALL/bin/desktop-launch
-
-  kodi:
-    plugin: ppa
-    ppa: team-xbmc/ppa
-    override-stage: |
-      if [ -e "$SNAPCRAFT_PART_INSTALL/usr/bin/kodi" ]; then
-        sed --in-place s'!/usr!${SNAP}/usr!' $SNAPCRAFT_PART_INSTALL/usr/bin/kodi
-      fi
-      rm -f $SNAPCRAFT_PART_INSTALL/usr/share/applications/python2.7.desktop
-      snapcraftctl stage
-    stage-packages:
-      - to amd64: [ kodi-wayland, kodi-repository-kodi, kodi-visualization-spectrum, samba-libs ]
-      - to  i386: [ kodi-wayland, kodi-repository-kodi, kodi-visualization-spectrum, samba-libs ]
-
-  config:
-    plugin: dump
-    source: config
 
   setup-scripts:
     plugin: dump
