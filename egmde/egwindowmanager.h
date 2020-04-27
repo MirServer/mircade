@@ -36,11 +36,7 @@ public:
     auto place_new_window(ApplicationInfo const& app_info, WindowSpecification const& request_parameters)
     -> WindowSpecification override;
 
-    void advise_new_app(ApplicationInfo& application) override;
-
     void advise_delete_window(WindowInfo const& window_info) override;
-
-    void advise_delete_app(ApplicationInfo const& application) override;
 
     void handle_window_ready(WindowInfo& window_info) override;
 
@@ -51,7 +47,6 @@ private:
     Launcher* const launcher;
 
     void start_launcher() const;
-    int apps = 0;
 };
 }
 

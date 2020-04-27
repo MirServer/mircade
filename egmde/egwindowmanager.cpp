@@ -78,34 +78,27 @@ void egmde::WindowManagerPolicy::handle_modify_window(WindowInfo& window_info, W
     MinimalWindowManager::handle_modify_window(window_info, specification);
 }
 
-void egmde::WindowManagerPolicy::advise_new_app(miral::ApplicationInfo& application)
-{
-    ++apps;
-
-    MinimalWindowManager::advise_new_app(application);
-}
-
-void egmde::WindowManagerPolicy::advise_delete_app(miral::ApplicationInfo const& application)
-{
-    --apps;
-
-    start_launcher();
-
-    MinimalWindowManager::advise_delete_app(application);
-}
-
 void egmde::WindowManagerPolicy::start_launcher() const
 {
     // If we only have the wallpaper and launcher, time to show the launcher!
-    if (apps == 2)
-    {
-        std::thread([this] { this->launcher->show(); }).detach();
-    }
+    std::thread([this] { this->launcher->show(); }).detach();
 }
 
 void egmde::WindowManagerPolicy::advise_delete_window(miral::WindowInfo const& window_info)
 {
-    start_launcher();
+    auto const& application = window_info.window().application();
+
+    if (application != launcher->session() &&
+        application != wallpaper->session())
+    {
+        auto const& app_info = tools.info_for(application);
+
+        if (app_info.windows().size() == 1)
+        {
+            start_launcher();
+        }
+    }
+
     WindowManagementPolicy::advise_delete_window(window_info);
 }
 
