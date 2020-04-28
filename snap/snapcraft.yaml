@@ -28,6 +28,22 @@ apps:
       - hardware-observe
 
 plugs:
+#  - audio-playback
+#  - audio-record
+#  - camera
+  desktop:
+  hardware-observe:
+  home:
+  network:
+#  - network-bind
+  network-manager-observe:
+#  - opengl
+#  - pulseaudio
+  removable-media:
+  screen-inhibit-control:
+  system-observe:
+  audio-record:
+  camera:
   opengl:
   audio-playback:
   network-bind:
@@ -146,6 +162,8 @@ parts:
       - libxcb-randr0
       - libxcb-xtest0
       - libx11-6
+      - libxtst6
+      - pulseaudio-utils
 
   xterm:
     plugin: nil
