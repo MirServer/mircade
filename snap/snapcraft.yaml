@@ -128,8 +128,8 @@ parts:
       rm -f $SNAPCRAFT_PART_INSTALL/usr/share/applications/python2.7.desktop
       snapcraftctl stage
     stage-packages:
-      - to amd64: [ kodi-wayland, kodi-repository-kodi, kodi-visualization-spectrum, samba-libs ]
-      - to  i386: [ kodi-wayland, kodi-repository-kodi, kodi-visualization-spectrum, samba-libs ]
+      - to amd64: [ kodi-wayland, kodi-repository-kodi, kodi-visualization-spectrum, samba-libs, libaudio2 ]
+      - to  i386: [ kodi-wayland, kodi-repository-kodi, kodi-visualization-spectrum, samba-libs, libaudio2 ]
 
   config:
     plugin: dump
