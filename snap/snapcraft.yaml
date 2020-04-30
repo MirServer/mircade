@@ -28,6 +28,7 @@ apps:
       - hardware-observe
 
 plugs:
+  browser-support: # For thunderbird!
   opengl:
   audio-playback:
   network-bind:
