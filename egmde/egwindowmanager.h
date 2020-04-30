@@ -44,6 +44,8 @@ private:
     Wallpaper const* const wallpaper;
     Launcher* const launcher;
 
+    int app_windows{0};
+
     void start_launcher() const;
 };
 }

@@ -63,9 +63,7 @@ void egmde::WindowManagerPolicy::advise_delete_window(miral::WindowInfo const& w
     if (application != launcher->session() &&
         application != wallpaper->session())
     {
-        auto const& app_info = tools.info_for(application);
-
-        if (app_info.windows().size() == 1)
+        if (--app_windows == 0)
         {
             start_launcher();
         }
@@ -81,5 +79,9 @@ void egmde::WindowManagerPolicy::handle_window_ready(miral::WindowInfo& window_i
     if (window_info.window().application() == wallpaper->session())
     {
         start_launcher();
+    }
+    else if (window_info.window().application() != launcher->session())
+    {
+        ++app_windows;
     }
 }

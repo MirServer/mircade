@@ -11,6 +11,6 @@ do
     $cmd
 done
 
-export MIR_SERVER_WALLPAPER_TOP=0x7f7fff
-export MIR_SERVER_WALLPAPER_BOTTOM=0x3f7f3f
+export MIR_SERVER_WALLPAPER_TOP=0x333333
+export MIR_SERVER_WALLPAPER_BOTTOM=0xe95420
 exec ${bindir}egmde "$@"
