@@ -382,6 +382,11 @@ void egmde::Launcher::Self::keyboard_key(wl_keyboard* /*keyboard*/, uint32_t /*s
             run_app();
             break;
 
+        case XKB_KEY_Escape:
+            running = false;
+            for_each_surface([this](auto& info) { this->draw_screen(info); });
+            break;
+
         default:
         {
             uint32_t utf32 = xkb_keysym_to_utf32(keysym);
