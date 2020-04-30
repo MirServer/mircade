@@ -93,6 +93,16 @@ layout:
     bind: $SNAP/usr/lib/$SNAPCRAFT_ARCH_TRIPLET/dri
 
 parts:
+  thunderbird:
+    plugin: nil
+    stage-packages:
+      - thunderbird
+
+  hexchat:
+    plugin: nil
+    stage-packages:
+      - hexchat
+
   neverball:
     plugin: nil
     stage-packages:
@@ -190,7 +200,7 @@ parts:
   egmde:
     source: egmde
     plugin: cmake-with-ppa
-    ppa: mir-team/release
+    ppa: mir-team/dev
     build-packages:
       - pkg-config
       - libmiral-dev
