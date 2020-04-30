@@ -64,20 +64,6 @@ layout:
     symlink: $SNAP/usr/bin/xkbcomp
   /usr/lib/${SNAPCRAFT_ARCH_TRIPLET}/webkit2gtk-4.0:
     bind: $SNAP/usr/lib/${SNAPCRAFT_ARCH_TRIPLET}/webkit2gtk-4.0
-  /usr/share/kodi:
-    bind: $SNAP/usr/share/kodi
-  /usr/lib/${SNAPCRAFT_ARCH_TRIPLET}/kodi:
-    bind: $SNAP/usr/lib/$SNAPCRAFT_ARCH_TRIPLET/kodi
-  /usr/share/crawl:
-    bind: $SNAP/usr/share/crawl
-  /usr/share/starfighter:
-    bind: $SNAP/usr/share/starfighter
-  /usr/share/games:
-    bind: $SNAP/usr/share/games
-  /usr/games:
-    bind: $SNAP/usr/games
-  /usr/lib/games:
-    bind: $SNAP/usr/lib/games
   /usr/share/X11/xkb:
     bind: $SNAP/usr/share/X11/xkb
   /usr/share/fonts:
