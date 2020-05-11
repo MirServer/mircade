@@ -194,7 +194,7 @@ parts:
     stage-packages:
       - fonts-freefont-ttf
       - mir-graphics-drivers-desktop
-      - libmiral3
+      - libmiral4
     stage:
       - -usr/share/wayland-sessions/egmde.desktop
 
