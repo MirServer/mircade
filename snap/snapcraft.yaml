@@ -1,4 +1,4 @@
-name: mircade
+name: mirgibber
 version: git
 summary: Example Mir confined desktop
 description: This example can be used as a guide
@@ -7,7 +7,7 @@ grade: stable
 base: core18
 
 apps:
-  mircade:
+  mirgibber:
     command: desktop-launch egmde-launch
     plugs:
       - x11
@@ -151,11 +151,6 @@ parts:
     plugin: nil
     stage-packages:
       - hexchat
-
-  xterm:
-    plugin: nil
-    stage-packages:
-      - xterm
 
   xwayland:
     plugin: nil
