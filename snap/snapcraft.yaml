@@ -180,10 +180,10 @@ parts:
     stage-packages:
       - firefox
 
-  telegram-desktop:
-    plugin: nil
-    stage-packages:
-      - telegram-desktop
+#  telegram-desktop:
+#    plugin: nil
+#    stage-packages:
+#      - telegram-desktop
 
   snapcraft-desktop-helpers:
     source: https://github.com/ubuntu/snapcraft-desktop-helpers.git
