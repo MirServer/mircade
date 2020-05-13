@@ -493,6 +493,9 @@ void egmde::Launcher::Self::run_app(Mode mode)
     auto app = current_app->exec;
 
     run_app(app, mode);
+
+    running = false;
+    for_each_surface([this](auto& info) { this->draw_screen(info); });
 }
 
 void egmde::Launcher::Self::run_app(std::string app, Mode mode) const

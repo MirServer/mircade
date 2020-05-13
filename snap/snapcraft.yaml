@@ -56,14 +56,21 @@ environment:
   MIR_SERVER_ENABLE_X11: 1
   SHELL: bash
   LC_ALL: C.UTF-8
-  LD_LIBRARY_PATH: ${LD_LIBRARY_PATH}:${SNAP}/usr/lib/${SNAPCRAFT_ARCH_TRIPLET}/pulseaudio:$SNAP/opt/zoom
+  LD_LIBRARY_PATH: ${LD_LIBRARY_PATH}:${SNAP}/usr/lib/${SNAPCRAFT_ARCH_TRIPLET}/pulseaudio
   PATH: $SNAP/bin/:$SNAP/usr/bin/:${SNAP}/usr/games:${PATH}
   # XDG config
   XDG_CACHE_HOME:  $SNAP_USER_COMMON/.cache
   XDG_DATA_DIRS:   $SNAP/usr/share
   XDG_CONFIG_HOME: $SNAP_USER_DATA/.config
+  QT_PLUGIN_PATH: ${SNAP}/usr/lib/${SNAPCRAFT_ARCH_TRIPLET}/qt5/plugins/
+  QT_QPA_PLATFORM_PLUGIN_PATH: ${SNAP}/usr/lib/${SNAPCRAFT_ARCH_TRIPLET}/qt5/plugins/platforms/
+  QML2_IMPORT_PATH: ${SNAP}/usr/lib/${SNAPCRAFT_ARCH_TRIPLET}/qt5/qml
+  QTCHOOSER_NO_GLOBAL_DIR: 1
+  QT_SELECT: snappy-qt5
 
 layout:
+  /usr/share/qt5:
+    bind: $SNAP/usr/share/qt5
   /opt/zoom:
     bind: $SNAP/opt/zoom
   /usr/bin/zoom:
@@ -88,6 +95,11 @@ layout:
     bind: $SNAP/usr/lib/$SNAPCRAFT_ARCH_TRIPLET/dri
 
 parts:
+  gtk2:
+    plugin: nil
+    stage-packages:
+      - libgtk2.0-0
+
   zoom:
     after:
       - zoom-deps
@@ -158,10 +170,17 @@ parts:
       - xwayland
       - libbz2-1.0
 
-  epiphany:
+  firefox:
+    after:
+      - gtk2
     plugin: nil
     stage-packages:
-      - epiphany-browser
+      - firefox
+
+  telegram-desktop:
+    plugin: nil
+    stage-packages:
+      - telegram-desktop
 
   snapcraft-desktop-helpers:
     source: https://github.com/ubuntu/snapcraft-desktop-helpers.git
@@ -212,6 +231,11 @@ parts:
       - libgtk3-nocsd0
       - dbus
       - libusb-1.0-0
+
+  qt:
+    plugin: nil
+    stage-packages:
+      - qtwayland5
 
   sdl2:
     plugin: nil
