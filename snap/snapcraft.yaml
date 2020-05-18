@@ -410,8 +410,7 @@ parts:
       - mate-common
       - mate-desktop
       - mate-weather
-    source: https://github.com/wmww/mate-panel.git
-    source-branch: wayland-snap
+    source: https://github.com/mate-desktop/mate-panel.git
     source-depth: 1
     configflags:
       - --with-in-process-applets=all
