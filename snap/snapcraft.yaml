@@ -8,7 +8,7 @@ base: core18
 
 apps:
   mirgibber:
-    command: desktop-launch egmde-launch
+    command: desktop-launch launch-mirgibber
     plugs:
       - x11
     environment:
@@ -16,7 +16,7 @@ apps:
       PULSE_SERVER: unix:$XDG_RUNTIME_DIR/../pulse/native
 
   daemon:
-    command: nested-start desktop-launch egmde-launch
+    command: nested-start desktop-launch launch-mirgibber
     daemon: simple
     restart-condition: always
     environment:
@@ -210,7 +210,7 @@ parts:
     source: setup-scripts
 
   egmde:
-    source: egmde
+    source: https://github.com/AlanGriffiths/egmde.git
     plugin: cmake-with-ppa
     ppa: mir-team/dev
     build-packages:
@@ -226,6 +226,21 @@ parts:
       - libmiral4
     stage:
       - -usr/share/wayland-sessions/egmde.desktop
+    prime:
+      - -lib/udev
+      - -usr/doc
+      - -usr/doc-base
+      - -usr/share/applications
+      - -usr/share/apport
+      - -usr/share/bug
+      - -usr/share/doc
+      - -usr/share/doc-base
+      - -usr/share/icons
+      - -usr/share/libdrm
+      - -usr/share/libwacom
+      - -usr/share/lintian
+      - -usr/share/man
+      - -usr/share/pkgconfig
 
   misc:
     plugin: nil
@@ -385,11 +400,6 @@ parts:
 #    plugin: nil
 #    stage-packages:
 #      - xterm
-
-  qterminal:
-    plugin: nil
-    stage-packages:
-      - qterminal
 
   mate-panel:
     plugin: autotools
