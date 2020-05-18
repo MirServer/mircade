@@ -1,7 +1,7 @@
 #!/bin/sh
 firefox_profile_dir=${HOME}/.mozilla/firefox
-if [ -O "${firefox_profile_dir}/profiles.ini" ]; then exit 0; fi
-
+if [ ! -O "${firefox_profile_dir}/profiles.ini" ]
+then
 mkdir -p ${firefox_profile_dir}/6pwi1bhh.default
 
 echo 'user_pref("gfx.webrender.all", true);' > ${firefox_profile_dir}/6pwi1bhh.default/user.js
@@ -17,3 +17,4 @@ Default=1
 StartWithLastProfile=1
 Version=2
 EOF
+fi

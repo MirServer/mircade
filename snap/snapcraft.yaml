@@ -27,7 +27,14 @@ apps:
       - wayland
       - hardware-observe
 
+slots:
+  dbus-mate-panel:
+    interface: dbus
+    bus: session
+    name: org.mate.Panel
+
 plugs:
+  gsettings:
   desktop:
   screen-inhibit-control:
   audio-record:
@@ -180,23 +187,23 @@ parts:
     stage-packages:
       - firefox
 
-#  telegram-desktop:
-#    plugin: nil
-#    stage-packages:
-#      - telegram-desktop
+  telegram-desktop:
+    plugin: nil
+    stage-packages:
+      - telegram-desktop
 
-  snapcraft-desktop-helpers:
-    source: https://github.com/ubuntu/snapcraft-desktop-helpers.git
-    source-subdir: gtk
-    plugin: make
-    make-parameters: ["FLAVOR=gtk3"]
-    build-packages:
-      - build-essential
-      - libgtk-3-dev
-    override-build: |
-      snapcraftctl build
-      # desktop-launch doesn't handle running without a user session very well, this avoids slow startup here
-      sed --in-place s'/^  needs_update=true/:/' $SNAPCRAFT_PART_INSTALL/bin/desktop-launch
+#  snapcraft-desktop-helpers:
+#    source: https://github.com/ubuntu/snapcraft-desktop-helpers.git
+#    source-subdir: gtk
+#    plugin: make
+#    make-parameters: ["FLAVOR=gtk3"]
+#    build-packages:
+#      - build-essential
+#      - libgtk-3-dev
+#    override-build: |
+#      snapcraftctl build
+#      # desktop-launch doesn't handle running without a user session very well, this avoids slow startup here
+#      sed --in-place s'/^  needs_update=true/:/' $SNAPCRAFT_PART_INSTALL/bin/desktop-launch
 
   setup-scripts:
     plugin: dump
@@ -256,6 +263,166 @@ parts:
       - libwayland-egl1-mesa
       - libglu1-mesa
       - va-driver-all
+
+  desktop-gtk3:
+    source: https://github.com/ubuntu/snapcraft-desktop-helpers.git
+    source-subdir: gtk
+    plugin: make
+    make-parameters: ["FLAVOR=gtk3"]
+    build-packages:
+      - build-essential
+      - libgtk-3-dev
+    stage-packages:
+      - libxkbcommon0  # XKB_CONFIG_ROOT
+      - ttf-ubuntu-font-family
+      - dmz-cursor-theme
+      - light-themes
+      - adwaita-icon-theme
+      - gnome-themes-standard
+      - shared-mime-info
+      - libgtk-3-0
+      - libgdk-pixbuf2.0-0
+      - libglib2.0-bin
+      - libgtk-3-bin
+      - unity-gtk3-module
+      - libappindicator3-1
+      - locales-all
+      - xdg-user-dirs
+      - ibus-gtk3
+      - libibus-1.0-5
+      - fcitx-frontend-gtk3
+
+  gtk-layer-shell:
+    after: [desktop-gtk3]
+    plugin: meson
+    source: https://github.com/wmww/gtk-layer-shell.git
+    source-depth: 1
+    build-packages:
+      - libwayland-dev
+      - gobject-introspection
+      - libgirepository1.0-dev
+    stage-packages:
+      - libwayland-client0
+
+  gtk-layer-background:
+    after: [desktop-gtk3, gtk-layer-shell]
+    plugin: autotools
+    source: https://github.com/wmww/gtk-layer-background.git
+    source-depth: 1
+    configflags:
+      - --prefix=/usr
+
+  mate-common:
+    after: [desktop-gtk3]
+    plugin: autotools
+    source: https://github.com/mate-desktop/mate-common.git
+    source-depth: 1
+    configflags:
+      - --prefix=/usr
+    override-build: |
+      snapcraftctl build
+      sed -i 's:^prefix=/usr$:prefix=${SNAPCRAFT_STAGE}/usr/:g' ${SNAPCRAFT_PART_INSTALL}/usr/bin/mate-doc-common
+    build-environment:
+      - ACLOCAL_FLAGS: -I ${SNAPCRAFT_STAGE}/usr/share/aclocal/
+    stage-packages:
+      - mate-icon-theme
+      - adwaita-icon-theme-full
+
+  mate-desktop:
+    after: [mate-common]
+    plugin: autotools
+    source: https://github.com/mate-desktop/mate-desktop.git
+    source-depth: 1
+    configflags:
+      - --prefix=/usr
+    build-environment:
+      - ACLOCAL_FLAGS: -I ${SNAPCRAFT_STAGE}/usr/share/aclocal/
+    build-packages:
+      - intltool
+      - gtk-doc-tools
+      - gobject-introspection
+      - libdconf-dev
+      - libgtk-3-dev
+      - iso-codes
+    stage-packages:
+      - libxcomposite1
+      - libxdamage1
+      - libxext6
+      - libxrandr2
+      - libatk1.0-0
+      - libatk-bridge2.0-0
+      - libcairo2
+      - libcairo-gobject2
+      - libepoxy0
+      - libgraphite2-3
+      - libgdk-pixbuf2.0-0
+      - zlib1g
+
+  mate-menu:
+    plugin: autotools
+    after: [mate-common]
+    source: https://github.com/mate-desktop/mate-menus.git
+    source-depth: 1
+    build-environment:
+      - ACLOCAL_FLAGS: -I ${SNAPCRAFT_STAGE}/usr/share/aclocal/
+
+  mate-weather:
+    plugin: autotools
+    after: [mate-common]
+    source: https://github.com/mate-desktop/libmateweather.git
+    source-depth: 1
+    configflags:
+      - --prefix=/usr
+    build-environment:
+      - ACLOCAL_FLAGS: -I ${SNAPCRAFT_STAGE}/usr/share/aclocal/
+    build-packages:
+      - libsoup2.4-dev
+      - tzdata
+      - libxml2-dev
+
+# Sometimes useful for debugging
+#  xterm:
+#    plugin: nil
+#    stage-packages:
+#      - xterm
+
+  qterminal:
+    plugin: nil
+    stage-packages:
+      - qterminal
+
+  mate-panel:
+    plugin: autotools
+    after:
+      - desktop-gtk3
+      - gtk-layer-shell
+      - mate-menu
+      - mate-common
+      - mate-desktop
+      - mate-weather
+    source: https://github.com/wmww/mate-panel.git
+    source-branch: wayland-snap
+    source-depth: 1
+    configflags:
+      - --with-in-process-applets=all
+      - --enable-wayland
+      - --disable-x11
+      - --prefix=/usr
+    build-environment:
+      - ACLOCAL_FLAGS: -I ${SNAPCRAFT_STAGE}/usr/share/aclocal/
+    build-packages:
+      - yelp-tools
+      - libwnck-3-dev
+      - librsvg2-dev
+      - librsvg2-bin
+      - autoconf-archive
+    stage-packages:
+      - libice6
+      - libwnck-3-0
+      - libsm6
+      - libxres1
+      - libstartup-notification0
+      - libxcb-util1
 
 architectures:
   - build-on: amd64

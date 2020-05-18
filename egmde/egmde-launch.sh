@@ -8,7 +8,7 @@ mkdir -p ${XDG_RUNTIME_DIR}
 
 for cmd in $(find ${SNAP}/bin -name setup-*)
 do
-    $cmd
+    . $cmd
 done
 
 export MIR_SERVER_WALLPAPER_TOP=0x333333
