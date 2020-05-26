@@ -27,14 +27,7 @@ apps:
       - wayland
       - hardware-observe
 
-slots:
-  dbus-mate-panel:
-    interface: dbus
-    bus: session
-    name: org.mate.Panel
-
 plugs:
-  gsettings:
   desktop:
   screen-inhibit-control:
   audio-record:
@@ -80,8 +73,6 @@ layout:
     bind: $SNAP/usr/share/qt5
   /usr/bin/xkbcomp:
     symlink: $SNAP/usr/bin/xkbcomp
-  /usr/lib/${SNAPCRAFT_ARCH_TRIPLET}/webkit2gtk-4.0:
-    bind: $SNAP/usr/lib/${SNAPCRAFT_ARCH_TRIPLET}/webkit2gtk-4.0
   /usr/share/X11/xkb:
     bind: $SNAP/usr/share/X11/xkb
   /usr/share/fonts:
@@ -98,20 +89,10 @@ layout:
     bind: $SNAP/usr/lib/$SNAPCRAFT_ARCH_TRIPLET/dri
 
 parts:
-  gtk2:
-    plugin: nil
-    stage-packages:
-      - libgtk2.0-0
-
   thunderbird:
     plugin: nil
     stage-packages:
       - thunderbird
-
-  hexchat:
-    plugin: nil
-    stage-packages:
-      - hexchat
 
   xwayland:
     plugin: nil
@@ -121,7 +102,7 @@ parts:
 
   firefox:
     after:
-      - gtk2
+      - snapcraft-desktop-helpers
     plugin: nil
     override-stage: |
       rm -f $SNAPCRAFT_PART_INSTALL/usr/share/applications/python3.6.desktop
@@ -133,19 +114,6 @@ parts:
     plugin: nil
     stage-packages:
       - telegram-desktop
-
-#  snapcraft-desktop-helpers:
-#    source: https://github.com/ubuntu/snapcraft-desktop-helpers.git
-#    source-subdir: gtk
-#    plugin: make
-#    make-parameters: ["FLAVOR=gtk3"]
-#    build-packages:
-#      - build-essential
-#      - libgtk-3-dev
-#    override-build: |
-#      snapcraftctl build
-#      # desktop-launch doesn't handle running without a user session very well, this avoids slow startup here
-#      sed --in-place s'/^  needs_update=true/:/' $SNAPCRAFT_PART_INSTALL/bin/desktop-launch
 
   setup-scripts:
     plugin: dump
@@ -196,7 +164,6 @@ parts:
       - libslang2
       - libgpm2
       - libgtk3-nocsd0
-      - dbus
       - libusb-1.0-0
 
   qt:
@@ -221,7 +188,7 @@ parts:
       - libglu1-mesa
       - va-driver-all
 
-  desktop-gtk3:
+  snapcraft-desktop-helpers:
     source: https://github.com/ubuntu/snapcraft-desktop-helpers.git
     source-subdir: gtk
     plugin: make
@@ -229,25 +196,10 @@ parts:
     build-packages:
       - build-essential
       - libgtk-3-dev
-    stage-packages:
-      - libxkbcommon0  # XKB_CONFIG_ROOT
-      - ttf-ubuntu-font-family
-      - dmz-cursor-theme
-      - light-themes
-      - adwaita-icon-theme
-      - gnome-themes-standard
-      - shared-mime-info
-      - libgtk-3-0
-      - libgdk-pixbuf2.0-0
-      - libglib2.0-bin
-      - libgtk-3-bin
-      - unity-gtk3-module
-      - libappindicator3-1
-      - locales-all
-      - xdg-user-dirs
-      - ibus-gtk3
-      - libibus-1.0-5
-      - fcitx-frontend-gtk3
+    override-build: |
+      snapcraftctl build
+      # desktop-launch doesn't handle running without a user session very well, this avoids slow startup here
+      sed --in-place s'/^  needs_update=true/:/' $SNAPCRAFT_PART_INSTALL/bin/desktop-launch
 
 architectures:
   - build-on: amd64
