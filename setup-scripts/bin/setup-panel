@@ -1,9 +1,0 @@
-#!/bin/sh
-
-export MATE_PANEL_APPLETS_DIR=$SNAP/usr/share/mate-panel/applets/
-export MATE_PANEL_APPLET_LIB_PREFIX=$SNAP/
-export MATE_PANEL_DATA_DIR=$SNAP/usr/share/mate-panel/
-
-rm -f ${XDG_RUNTIME_DIR}/dconf/user
-export MIR_SERVER_WAYLAND_EXTENSIONS=wl_shell:xdg_wm_base:zwlr_layer_shell_v1:zxdg_output_manager_v1:zxdg_shell_v6
-export MIR_SERVER_STARTUP_APPS=mate-panel
