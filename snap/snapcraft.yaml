@@ -8,8 +8,9 @@ base: core18
 
 apps:
   mircade:
-    command: egmde-launch
+    command: wayland-if-possible egmde-launch
     plugs:
+      - wayland
       - x11
     environment:
       # Prep PulseAudio
