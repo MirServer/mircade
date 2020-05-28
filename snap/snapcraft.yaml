@@ -151,9 +151,10 @@ parts:
       - libwayland-dev
       - libxkbcommon-dev
     stage-packages:
-      - fonts-freefont-ttf
+      - try: [libmiral4]
+      - else: [libmiral3]
       - mir-graphics-drivers-desktop
-      - libmiral3
+      - fonts-freefont-ttf
     stage:
       - -usr/share/wayland-sessions/egmde.desktop
 
