@@ -11,6 +11,15 @@ do
     $cmd
 done
 
+if [ -z "$DISPLAY" ] && [ -z "$MIR_SERVER_WAYLAND_HOST" ] && ! snapctl is-connected login-session-control; then
+  echo "ERROR: You need one of:"
+  echo "  1. A \$DISPLAY: to run from an environment that supports X11"
+  echo "  2. A \$WAYLAND_DISPLAY: to run from an environment that supports Wayland"
+  echo "  3. A connected login-session-control interface: to run from a login shell (e.g. a VT)"
+  exit 1
+fi
+
+unset WAYLAND_DISPLAY
 export MIR_SERVER_WALLPAPER_TOP=0x7f7fff
 export MIR_SERVER_WALLPAPER_BOTTOM=0x3f7f3f
 exec ${bindir}egmde "$@"
