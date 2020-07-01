@@ -141,7 +141,8 @@ parts:
     source: setup-scripts
 
   egmde:
-    source: egmde
+    source: https://github.com/AlanGriffiths/egmde.git
+    source-branch: mircade
     plugin: cmake-with-ppa
     ppa: mir-team/release
     build-packages:
@@ -151,6 +152,7 @@ parts:
       - libfreetype6-dev
       - libwayland-dev
       - libxkbcommon-dev
+      - g++
     stage-packages:
       - try: [libmiral4]
       - else: [libmiral3]
@@ -158,6 +160,7 @@ parts:
       - fonts-freefont-ttf
     stage:
       - -usr/share/wayland-sessions/egmde.desktop
+      - -bin/egmde-launch
 
   misc:
     plugin: nil

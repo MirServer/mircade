@@ -2,12 +2,16 @@
 
 real_wayland=$(dirname "$XDG_RUNTIME_DIR")/${WAYLAND_DISPLAY:-wayland-0}
 
-if [ -O "${real_wayland}" ] && [ -e $SNAP_COMMON/wayland.connected ]
+if ! snapctl is-connected wayland
+then
+  echo "Wayland interface is NOT connected"
+elif [ -O "${real_wayland}" ]
 then
   mkdir -p ${XDG_RUNTIME_DIR}
   ln -sf "${real_wayland}" "$XDG_RUNTIME_DIR"
   export MIR_SERVER_WAYLAND_HOST=${WAYLAND_DISPLAY:-wayland-0}
-  unset WAYLAND_DISPLAY
+else
+  echo "Wayland interface is connected, but cannot use ${real_wayland}"
 fi
 
 exec "$@"
