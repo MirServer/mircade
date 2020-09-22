@@ -29,6 +29,12 @@
 #include <miral/set_window_management_policy.h>
 #include <miral/wayland_extensions.h>
 #include <miral/x11_support.h>
+#include <miral/version.h>
+#if MIRAL_VERSION >= MIR_VERSION_NUMBER(3, 0, 0)
+#include <miral/toolkit_event.h>
+
+using namespace miral::toolkit;
+#endif
 
 #include <boost/filesystem.hpp>
 #include <linux/input.h>
