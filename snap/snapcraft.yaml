@@ -4,11 +4,13 @@ summary: Example Mir confined desktop
 description: This example can be used as a guide
 confinement: strict
 grade: stable
-base: core18
+base: core20
 
 apps:
   mircade:
-    command: wayland-if-possible egmde-launch
+    command-chain:
+      - bin/wayland-if-possible
+    command: bin/egmde-launch
     plugs:
       - wayland
       - x11
@@ -17,7 +19,9 @@ apps:
       PULSE_SERVER: unix:$XDG_RUNTIME_DIR/../pulse/native
 
   daemon:
-    command: nested-start egmde-launch
+    command-chain:
+      - bin/nested-start
+    command: bin/egmde-launch
     daemon: simple
     restart-condition: always
     environment:
@@ -26,13 +30,13 @@ apps:
       PULSE_RUNTIME_PATH: /var/run/pulse
     plugs:
       - wayland
-      - hardware-observe
 
 plugs:
   opengl:
   audio-playback:
   network-bind:
   login-session-control:
+  joystick:
 
 environment:
   SHELL: bash
@@ -96,10 +100,13 @@ parts:
       - supertux
 
 # In 18.04 needs an X server (20.04 works on Wayland)
-#  supertuxkart:
-#    plugin: nil
-#    stage-packages:
-#      - supertuxkart
+  supertuxkart:
+    plugin: nil
+    override-build: |
+      snapcraftctl build
+      sed --in-place s'!^Exec=supertuxkart$!Exec=supertuxkart --fullscreen!' $SNAPCRAFT_PART_INSTALL/usr/share/applications/supertuxkart.desktop
+    stage-packages:
+      - supertuxkart
 
 # Window isn't positioned for fullscreen, re-instate when have "kiosk" window management
   crawl-tiles:
@@ -114,23 +121,10 @@ parts:
 #      - caveexpress
 
 # Cursor not always positioned right, seems to track motion with wrong starting position
-#  7kaa:
-#    plugin: nil
-#    stage-packages:
-#      - 7kaa
-
-  kodi:
-    plugin: ppa
-    ppa: team-xbmc/ppa
-    override-stage: |
-      if [ -e "$SNAPCRAFT_PART_INSTALL/usr/bin/kodi" ]; then
-        sed --in-place s'!/usr!${SNAP}/usr!' $SNAPCRAFT_PART_INSTALL/usr/bin/kodi
-      fi
-      rm -f $SNAPCRAFT_PART_INSTALL/usr/share/applications/python2.7.desktop
-      snapcraftctl stage
+  7kaa:
+    plugin: nil
     stage-packages:
-      - to amd64: [ kodi-wayland, kodi-repository-kodi, kodi-visualization-spectrum, samba-libs, libaudio2 ]
-      - to  i386: [ kodi-wayland, kodi-repository-kodi, kodi-visualization-spectrum, samba-libs, libaudio2 ]
+      - 7kaa
 
   config:
     plugin: dump
@@ -140,12 +134,21 @@ parts:
     plugin: dump
     source: setup-scripts
 
+  ppa-setup:
+    plugin: nil
+    override-pull: |
+      sudo apt --assume-yes install software-properties-common
+      sudo add-apt-repository -y ppa:mir-team/dev
+      sudo apt --assume-yes install libmiral-dev
+      snapcraftctl pull
+
   egmde:
+    after: [ppa-setup]
     source: https://github.com/AlanGriffiths/egmde.git
     source-branch: mircade
-    plugin: cmake-with-ppa
-    ppa: mir-team/release
+    plugin: cmake
     build-packages:
+      - build-essential
       - pkg-config
       - libmiral-dev
       - libboost-filesystem-dev
@@ -154,8 +157,7 @@ parts:
       - libxkbcommon-dev
       - g++
     stage-packages:
-      - try: [libmiral4]
-      - else: [libmiral3]
+      - libmiral4
       - mir-graphics-drivers-desktop
       - fonts-freefont-ttf
     stage:
@@ -196,6 +198,4 @@ parts:
 architectures:
   - build-on: amd64
   - build-on: armhf
-  - build-on: i386
   - build-on: arm64
-  - build-on: ppc64el
