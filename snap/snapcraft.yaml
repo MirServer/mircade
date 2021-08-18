@@ -52,10 +52,11 @@ environment:
   PATH: $SNAP/bin/:$SNAP/usr/bin/:${SNAP}/usr/games:${PATH}
   # XDG config
   XDG_CACHE_HOME:  $SNAP_USER_COMMON/.cache
-  XDG_DATA_DIRS:   $SNAP/usr/share
   XDG_CONFIG_HOME: $SNAP_USER_DATA/.config
 
 layout:
+  /usr/share/applications:
+    bind: $SNAP/usr/share/applications
   /usr/share/crawl:
     bind: $SNAP/usr/share/crawl
   /usr/share/starfighter:
