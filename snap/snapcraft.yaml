@@ -37,22 +37,26 @@ plugs:
   network-bind:
   login-session-control:
   joystick:
+  graphics-core20:
+    interface: content
+    target: $SNAP/graphics
+    default-provider: mesa-core20
 
 environment:
   SHELL: bash
   LC_ALL: C.UTF-8
-  LD_LIBRARY_PATH: ${LD_LIBRARY_PATH}:${SNAP}/usr/lib/${SNAPCRAFT_ARCH_TRIPLET}/pulseaudio
+  LD_LIBRARY_PATH:    $SNAP/graphics/lib:${SNAP}/usr/lib/${SNAPCRAFT_ARCH_TRIPLET}/pulseaudio
+  LIBGL_DRIVERS_PATH: $SNAP/graphics/dri
+  LIBVA_DRIVERS_PATH: $SNAP/graphics/dri
+  __EGL_VENDOR_LIBRARY_DIRS: $SNAP/graphics/glvnd/egl_vendor.d
   PATH: $SNAP/bin/:$SNAP/usr/bin/:${SNAP}/usr/games:${PATH}
   # XDG config
   XDG_CACHE_HOME:  $SNAP_USER_COMMON/.cache
-  XDG_DATA_DIRS:   $SNAP/usr/share
   XDG_CONFIG_HOME: $SNAP_USER_DATA/.config
 
 layout:
-  /usr/share/kodi:
-    bind: $SNAP/usr/share/kodi
-  /usr/lib/${SNAPCRAFT_ARCH_TRIPLET}/kodi:
-    bind: $SNAP/usr/lib/$SNAPCRAFT_ARCH_TRIPLET/kodi
+  /usr/share/applications:
+    bind: $SNAP/usr/share/applications
   /usr/share/crawl:
     bind: $SNAP/usr/share/crawl
   /usr/share/starfighter:
@@ -77,6 +81,10 @@ layout:
     bind: $SNAP/usr/lib/$SNAPCRAFT_ARCH_TRIPLET/mir
   /usr/lib/${SNAPCRAFT_ARCH_TRIPLET}/dri:
     bind: $SNAP/usr/lib/$SNAPCRAFT_ARCH_TRIPLET/dri
+  /usr/share/libdrm:  # Needed by mesa-core20 on AMD GPUs
+    bind: $SNAP/graphics/libdrm
+  /usr/share/drirc.d:  # Used by mesa-core20 for app specific workarounds
+    bind: $SNAP/graphics/drirc.d
 
 parts:
   neverball:
@@ -99,7 +107,6 @@ parts:
     stage-packages:
       - supertux
 
-# In 18.04 needs an X server (20.04 works on Wayland)
   supertuxkart:
     plugin: nil
     override-build: |
@@ -108,7 +115,6 @@ parts:
     stage-packages:
       - supertuxkart
 
-# Window isn't positioned for fullscreen, re-instate when have "kiosk" window management
   crawl-tiles:
     plugin: nil
     stage-packages:
@@ -120,7 +126,6 @@ parts:
 #    stage-packages:
 #      - caveexpress
 
-# Cursor not always positioned right, seems to track motion with wrong starting position
   7kaa:
     plugin: nil
     stage-packages:
@@ -178,6 +183,7 @@ parts:
       - libgtk3-nocsd0
       - dbus
       - libusb-1.0-0
+      - libglu1-mesa
 
   sdl2:
     plugin: nil
@@ -187,13 +193,30 @@ parts:
       - libsdl2-mixer-2.0-0
       - libsdl2-net-2.0-0
 
-  mesa:
+  cleanup:
+    after:
+      - neverball
+      - neverputt
+      - starfighter
+      - supertux
+      - supertuxkart
+      - crawl-tiles
+      - 7kaa
+      - config
+      - setup-scripts
+      - egmde
+      - misc
+      - sdl2
     plugin: nil
-    stage-packages:
-      - libgl1-mesa-dri
-      - libwayland-egl1-mesa
-      - libglu1-mesa
-      - va-driver-all
+    build-snaps: [ mesa-core20 ]
+    override-prime: |
+      set -eux
+      cd /snap/mesa-core20/current/egl/lib
+      find . -type f,l -exec rm -f $SNAPCRAFT_PRIME/usr/lib/${SNAPCRAFT_ARCH_TRIPLET}/{} \;
+      rm -fr "$SNAPCRAFT_PRIME/usr/lib/${SNAPCRAFT_ARCH_TRIPLET}/dri"
+      for CRUFT in bug drirc.d glvnd libdrm lintian man; do
+        rm -rf "$SNAPCRAFT_PRIME/usr/share/$CRUFT"
+      done
 
 architectures:
   - build-on: amd64
