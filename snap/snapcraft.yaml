@@ -139,16 +139,7 @@ parts:
     plugin: dump
     source: setup-scripts
 
-  ppa-setup:
-    plugin: nil
-    override-pull: |
-      sudo apt --assume-yes install software-properties-common
-      sudo add-apt-repository -y ppa:mir-team/release
-      sudo apt --assume-yes install libmiral-dev
-      snapcraftctl pull
-
   egmde:
-    after: [ppa-setup]
     source: https://github.com/AlanGriffiths/egmde.git
     source-branch: mircade
     plugin: cmake
@@ -222,3 +213,7 @@ architectures:
   - build-on: amd64
   - build-on: armhf
   - build-on: arm64
+
+package-repositories:
+  - type: apt
+    ppa: mir-team/release
