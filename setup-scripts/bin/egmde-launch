@@ -22,4 +22,5 @@ fi
 unset WAYLAND_DISPLAY
 export MIR_SERVER_WALLPAPER_TOP=0x7f7fff
 export MIR_SERVER_WALLPAPER_BOTTOM=0x3f7f3f
+export MIR_SERVER_DRIVER_QUIRKS=skip:driver:nvidia  # Workaround for https://github.com/MirServer/mir/issues/2467
 exec $SNAP/usr/local/bin/egmde "$@"
